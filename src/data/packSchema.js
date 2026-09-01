@@ -25,7 +25,7 @@ export const schema = [
   {
     name: 'groupingAttribute',
     mandatory: true,
-    modifiable: false,
+    modifiable: true,
     desc:
       'Matching events found in the rootEvent will be grouped according to this attribute (e.g. session for Browser events)',
   },

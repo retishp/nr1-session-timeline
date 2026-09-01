@@ -8,11 +8,11 @@ import Dashboard from '../../src/components/dashboard/Dashboard'
 import { formatSinceAndCompare } from '../../src/utils/date-formatter'
 import { withConfigContext } from '../../src/context/ConfigContext'
 
-class SessionTimelineContainer extends React.PureComponent {
+class MainContainer extends React.PureComponent {
   state = {
     filter: '',
-    session: '',
-    sessionDate: '',
+    groupingValue: '',
+    groupingDate: '',
   }
 
   componentDidMount() {
@@ -30,10 +30,10 @@ class SessionTimelineContainer extends React.PureComponent {
   }
 
   onClearFilter = () => {
-    this.setState({ filter: '', session: '', sessionDate: '' })
+    this.setState({ filter: '', groupingValue: '', groupingDate: '' })
   }
 
-  onChooseSession = (sessionDate, session) => {
+  onChooseGrouping = (groupingDate, groupingValue) => {
     const {
       timeRange,
       entity: { accountId },
@@ -46,13 +46,13 @@ class SessionTimelineContainer extends React.PureComponent {
       urlState: {
         filter,
         duration: formatSinceAndCompare(timeRange),
-        session,
-        sessionDate,
+        groupingValue,
+        groupingDate,
         accountId,
         config,
       },
     })
-    this.setState({ sessionDate, session })
+    this.setState({ groupingDate, groupingValue })
   }
 
   render() {
@@ -103,7 +103,7 @@ class SessionTimelineContainer extends React.PureComponent {
                   selected={filter}
                   duration={duration}
                   timeRange={timeRange}
-                  chooseSession={this.onChooseSession}
+                  chooseGrouping={this.onChooseGrouping}
                 />
               </div>
             </>
@@ -131,4 +131,4 @@ class SessionTimelineContainer extends React.PureComponent {
   }
 }
 
-export default withConfigContext(SessionTimelineContainer)
+export default withConfigContext(MainContainer)
