@@ -91,7 +91,7 @@ export default class EventStream extends React.Component {
 
   buildStream = (data, legend) => {
     const { showWarningsOnly } = this.props
-    const sessionEvents = []
+    const events = []
 
     data.forEach((event, i) => {
       const hasWarnings = event['nr.warnings']
@@ -114,7 +114,7 @@ export default class EventStream extends React.Component {
 
         legendItem &&
           legendItem.visible &&
-          sessionEvents.push(
+          events.push(
             <div
               key={i}
               data-timeline-item-id={i}
@@ -173,7 +173,7 @@ export default class EventStream extends React.Component {
           )
       }
     })
-    return sessionEvents
+    return events
   }
 
   render() {
@@ -201,7 +201,7 @@ export default class EventStream extends React.Component {
     )
 
     return (
-      <div className="eventStreamSectionBase sessionSectionBase">
+      <div className="eventStreamSectionBase">
         {eventContent}
       </div>
     )

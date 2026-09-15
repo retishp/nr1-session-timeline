@@ -9,7 +9,7 @@ import {
   Spinner,
 } from 'nr1'
 import { ConfigProvider } from '../../src/context/ConfigContext'
-import SessionTimelineContainer from './SessionTimelineContainer'
+import MainContainer from './MainContainer'
 
 export default class Wrapper extends React.Component {
   render() {
@@ -35,7 +35,7 @@ export default class Wrapper extends React.Component {
                             <ConfigProvider
                               entityGuid={nerdletUrlState.entityGuid}
                             >
-                              <SessionTimelineContainer
+                              <MainContainer
                                 timeRange={timeRange}
                                 nerdletUrlState={nerdletUrlState}
                               />

@@ -6,11 +6,12 @@ import cloneDeep from 'lodash.clonedeep'
 import EventStream from './EventStream'
 import Timeline from './Timeline'
 import eventGroup from './EventGroup'
+import startCase from 'lodash.startcase'
 import { withConfigContext } from '../../context/ConfigContext'
 
 export default class TimelineContainer extends React.Component {
   state = {
-    sessionData: [],
+    timelineData: [],
     loading: true,
     legend: [],
     warnings: false,
@@ -50,7 +51,7 @@ export default class TimelineContainer extends React.Component {
 
         const legend = this.getLegend(data)
         this.setState({
-          sessionData: data,
+          timelineData: data,
           loading: false,
           legend,
           warnings,
@@ -62,9 +63,9 @@ export default class TimelineContainer extends React.Component {
   }
 
   getData = async (eventType, linkingAttributeClause) => {
-    const { entityGuid: guid, accountId, sessionDate, duration } = this.props
+    const { entityGuid: guid, accountId, groupingDate, duration } = this.props
 
-    const query = `SELECT * from ${eventType} WHERE entityGuid = '${guid}' and dateOf(timestamp) = '${sessionDate}' and ${linkingAttributeClause} ORDER BY timestamp ASC LIMIT MAX ${duration.since}`
+    const query = `SELECT * from ${eventType} WHERE entityGuid = '${guid}' and dateOf(timestamp) = '${groupingDate}' and ${linkingAttributeClause} ORDER BY timestamp ASC LIMIT MAX ${duration.since}`
     const { data } = await NrqlQuery.query({ accountIds: [accountId], query })
 
     let totalWarnings = 0
@@ -91,8 +92,8 @@ export default class TimelineContainer extends React.Component {
       entityGuid: guid,
       accountId,
       filter,
-      session,
-      sessionDate,
+      groupingValue,
+      groupingDate,
       duration,
       config: {
         rootEvent: event,
@@ -102,9 +103,9 @@ export default class TimelineContainer extends React.Component {
       },
     } = this.props
 
-    let attributeClause = `${groupingAttribute} = '${session}' and ${searchAttribute} = '${filter}'`
+    let attributeClause = `${groupingAttribute} = '${groupingValue}' and ${searchAttribute} = '${filter}'`
     if (linkingAttribute) {
-      const query = `SELECT uniques(${linkingAttribute}) from ${event} WHERE entityGuid = '${guid}' and dateOf(timestamp) = '${sessionDate}' and ${groupingAttribute} = '${session}' AND ${searchAttribute} = '${filter}' LIMIT MAX ${duration.since}`
+      const query = `SELECT uniques(${linkingAttribute}) from ${event} WHERE entityGuid = '${guid}' and dateOf(timestamp) = '${groupingDate}' and ${groupingAttribute} = '${groupingValue}' AND ${searchAttribute} = '${filter}' LIMIT MAX ${duration.since}`
 
       const { data } = await NrqlQuery.query({ accountIds: [accountId], query })
 
@@ -217,39 +218,39 @@ export default class TimelineContainer extends React.Component {
 
   render() {
     const {
-      sessionData,
+      timelineData,
       loading,
       legend,
       warnings,
       warningCount,
       showWarningsOnly,
     } = this.state
-    const { session, sessionDate, filter, config } = this.props
+    const { groupingValue, groupingDate, filter, config } = this.props
 
     return (
       <React.Fragment>
-        {!session && (
+        {!groupingValue && (
           <div className="timeline-container">
             <div className="empty-state">
               <HeadingText
                 className="empty-state-header"
                 type={HeadingText.TYPE.HEADING_3}
               >
-                Pick a session to continue
+                Pick a {startCase(config.groupingAttribute)} to continue
               </HeadingText>
               <div className="empty-state-desc">
-                To view the timeline breakdown of a specific session, please
+                To view the timeline breakdown of a specific {startCase(config.groupingAttribute)}, please
                 click on a line item in the chart to the left.
               </div>
             </div>
           </div>
         )}
-        {session && loading && (
+        {groupingValue && loading && (
           <div className="timeline-container">
             <Spinner />
           </div>
         )}
-        {session && !loading && (
+        {groupingValue && !loading && (
           <Stack
             directionType={Stack.DIRECTION_TYPE.VERTICAL}
             horizontalType={Stack.HORIZONTAL_TYPE.CENTER}
@@ -260,13 +261,13 @@ export default class TimelineContainer extends React.Component {
             <StackItem className="timeline__stack-item stack__header">
               <div>
                 <HeadingText type={HeadingText.TYPE.HEADING_3}>
-                  Viewing Session {session} for {filter} ({sessionDate})
+                  Viewing {startCase(config.groupingAttribute)} {groupingValue} for {filter} ({groupingDate})
                 </HeadingText>
               </div>
             </StackItem>
             <StackItem grow className="timeline__stack-item">
               <Timeline
-                data={sessionData}
+                data={timelineData}
                 loading={loading}
                 legend={legend}
                 legendClick={this.onClickLegend}
@@ -288,7 +289,7 @@ export default class TimelineContainer extends React.Component {
                 </div>
               )}
               <EventStream
-                data={sessionData}
+                data={timelineData}
                 loading={loading}
                 legend={legend}
                 showWarningsOnly={showWarningsOnly}
@@ -303,8 +304,8 @@ export default class TimelineContainer extends React.Component {
 }
 
 TimelineContainer.propTypes = {
-  session: PropTypes.string.isRequired,
-  sessionDate: PropTypes.string.isRequired,
+  groupingValue: PropTypes.string.isRequired,
+  groupingDate: PropTypes.string.isRequired,
   filter: PropTypes.string.isRequired,
   duration: PropTypes.object.isRequired,
 }

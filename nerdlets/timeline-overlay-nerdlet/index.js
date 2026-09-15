@@ -9,8 +9,8 @@ export default class Wrapper extends React.Component {
       <NerdletStateContext.Consumer>
         {({
           filter,
-          session,
-          sessionDate,
+          groupingValue,
+          groupingDate,
           duration,
           entityGuid,
           accountId,
@@ -21,8 +21,8 @@ export default class Wrapper extends React.Component {
               accountId={accountId}
               entityGuid={entityGuid}
               filter={filter}
-              session={session}
-              sessionDate={sessionDate}
+              groupingValue={groupingValue}
+              groupingDate={groupingDate}
               duration={duration}
               config={config}
             />

@@ -11,6 +11,7 @@ import {
   TableRowCell,
   SparklineTableRowCell,
 } from 'nr1'
+import startCase from 'lodash.startcase'
 import { withConfigContext } from '../../context/ConfigContext'
 import SectionHeader from '../section-header/SectionHeader'
 const dayjs = require('dayjs')
@@ -55,9 +56,9 @@ class SearchResults extends React.Component {
     return `${query} MAX WHERE ${groupingAttribute} = '${searchValue}' and dateOf(timestamp) = '${dateValue}' SINCE '${dayOfStart}' UNTIL '${dayOfEnd}'`
   }
 
-  onChooseSession = (evt, { item, index }) => {
-    const { chooseSession } = this.props
-    chooseSession(item.date, item.value)
+  onChooseGrouping = (evt, { item, index }) => {
+    const { chooseGrouping } = this.props
+    chooseGrouping(item.date, item.value)
   }
 
   shouldComponentUpdate(nextProps) {
@@ -73,6 +74,7 @@ class SearchResults extends React.Component {
     const {
       goldenMetricQueries,
       entity: { accountId },
+      config: { groupingAttribute },
     } = this.props
 
     return (
@@ -82,7 +84,7 @@ class SearchResults extends React.Component {
             Date
           </TableHeaderCell>
           <TableHeaderCell className="search-results__table-header">
-            Session
+            {startCase(groupingAttribute)}
           </TableHeaderCell>
           {goldenMetricQueries.map(q => (
             <TableHeaderCell className="search-results__table-header">
@@ -92,7 +94,7 @@ class SearchResults extends React.Component {
         </TableHeader>
 
         {({ item }) => (
-          <TableRow onClick={this.onChooseSession}>
+          <TableRow onClick={this.onChooseGrouping}>
             <TableRowCell className="search-results__row">
               {item.date}
             </TableRowCell>
@@ -131,7 +133,7 @@ class SearchResults extends React.Component {
         {selected && (
           <div className="search-results">
             <SectionHeader
-              header={`Sessions for ${selected} (click to view timeline)`}
+              header={`Results for ${selected} (click to view timeline)`}
               subheader="Per day"
             />
             <div className="search-results__table">
@@ -140,7 +142,7 @@ class SearchResults extends React.Component {
                   if (loading) return <Spinner fillContainer />
                   if (error) return <BlockText>{error.message}</BlockText>
 
-                  if (!data) return <div>No sessions found</div>
+                  if (!data) return <div>No results found</div>
                   return this.renderTable(this.flattenData(data))
                 }}
               </NrqlQuery>
@@ -155,7 +157,7 @@ class SearchResults extends React.Component {
 SearchResults.propTypes = {
   entity: PropTypes.object.isRequired,
   selected: PropTypes.string.isRequired,
-  chooseSession: PropTypes.func.isRequired,
+  chooseGrouping: PropTypes.func.isRequired,
   duration: PropTypes.object.isRequired,
 }
 

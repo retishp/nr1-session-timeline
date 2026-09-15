@@ -16,11 +16,11 @@ export default class Timeline extends React.PureComponent {
       }
 
       const value = result.timestamp - prevEvent.timestamp
-      const sessionGroup = eventGroup(result.eventAction)
+      const group = eventGroup(result.eventAction)
       const eventStreamItem = {
-        label: sessionGroup.timelineDisplay.label,
+        label: group.timelineDisplay.label,
         value: value > 0 ? value : 1,
-        color: sessionGroup.timelineDisplay.color,
+        color: group.timelineDisplay.color,
         timeSinceStart: this.getSecondsSinceStart(startTime, result.timestamp),
         warnings: result['nr.warnings'] ? result['nr.warnings'] : false,
       }
@@ -60,7 +60,7 @@ export default class Timeline extends React.PureComponent {
         horizontalType={Stack.HORIZONTAL_TYPE.CENTER}
       >
         <StackItem>
-          <p className="emptyStateHeader">Could not load session timeline</p>
+          <p className="emptyStateHeader">Could not load timeline</p>
         </StackItem>
       </Stack>
     )
@@ -71,7 +71,7 @@ export default class Timeline extends React.PureComponent {
           className="gaugeStack"
           directionType={Stack.DIRECTION_TYPE.VERTICAL}
         >
-          <StackItem className="gaugeStackItem sessionSectionBase">
+          <StackItem className="gaugeStackItem">
             {gaugeContent}
           </StackItem>
         </Stack>

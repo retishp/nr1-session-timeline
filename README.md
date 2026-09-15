@@ -180,7 +180,7 @@ Click on the "Reset to Defaults" button in the configuration form to revert to t
 
 - `grouping attribute` <a id="grouping-attribute"></a>
 
-  NOT MODIFIABLE. The `grouping attribute` is used to locate the full set of events shown in the [timeline view](#timeline). For Browser, the `grouping attribute` is `session`. For Mobile, the `grouping attribute` is `sessionId`.
+  The `grouping attribute` is used to locate the full set of events shown in the [timeline view](#timeline). For Browser, the default `grouping attribute` is `session`. For Mobile, the default `grouping attribute` is `sessionId`.
 
 - `timeline event types` <a id="timeline-event-types"></a>
 
