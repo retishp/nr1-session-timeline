@@ -4,7 +4,7 @@ import { transformCamelCaseForDisplay } from '../../utils/text-formatter'
 import { withConfigContext } from '../../context/ConfigContext'
 
 const DEFAULT_REQUIRED_MESSAGE = 'Required field'
-const FormInput = ({ path, schemaItem, value, changeConfigItem }) => {
+const FormInput = ({ path, schemaItem, value, config, changeConfigItem }) => {
   return (
     <Tooltip
       placementType={Tooltip.PLACEMENT_TYPE.RIGHT}
@@ -14,6 +14,7 @@ const FormInput = ({ path, schemaItem, value, changeConfigItem }) => {
         defaultValue={value}
         onChange={e => changeConfigItem(path, e.target.value)}
         required={schemaItem.mandatory}
+        disabled={typeof schemaItem.enabled !== 'undefined' && !schemaItem.enabled(config)}
         invalid={
           (schemaItem.mandatory && !value) ||
           (schemaItem.typeCheck && !schemaItem.typeCheck(value))

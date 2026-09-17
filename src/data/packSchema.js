@@ -8,26 +8,27 @@ export const schema = [
   },
   {
     name: 'searchAttribute',
-    title: 'Identifier',
+    title: 'Search Attribute',
     mandatory: true,
     modifiable: true,
     desc: `This is the value used to locate a desired data set. It should be something that uniquely identifies the data, such as an email or a userId. This will likely not be part of the custom dataset collected by New Relic's agents, so you may need to add instrumentation in order to collect it.`,
   },
   {
     name: 'rootEvent',
+    title: 'Search Event',
     display: 'dropdown',
     source: 'timelineEventTypes',
     mandatory: true,
     modifiable: true,
     desc:
-      'The root event type that will be evaluted for events matching the Identifier',
+      'The event type that will be evaluated for events matching the Search Attribute',
   },
   {
     name: 'groupingAttribute',
     mandatory: true,
     modifiable: true,
     desc:
-      'Matching events found in the rootEvent will be grouped according to this attribute (e.g. session for Browser events)',
+      'Matching events found in the Search Event will be grouped according to this attribute (e.g. session for Browser events, sessionId for Mobile). When including browser events for mobile WebViews, the attribute needs to be the same on both Mobile and Browser so a single grouping can be followed across the two.)',
   },
   {
     name: 'linkingAttribute',
@@ -37,6 +38,25 @@ export const schema = [
       'The attribute to use to identify related events. Defaults to groupingAttribute',
   },
   {
+    name: 'includeBrowserEvents',
+    mandatory: false,
+    modifiable: true,
+    desc:
+      'Whether to include browser events in the timeline event stream view',
+    display: 'checkbox',
+    type: 'MOBILE',
+    defaultValue: false,
+  },
+  {
+    name: 'includeLogEvents',
+    mandatory: false,
+    modifiable: true,
+    desc:
+      'Whether to include log events in the timeline event stream view',
+    display: 'checkbox',
+    defaultValue: false,
+  },
+  {
     name: 'timelineEventTypes',
     mandatory: true,
     modifiable: true,
@@ -44,6 +64,10 @@ export const schema = [
     desc:
       'The related event types that will be included in the timeline event stream view',
     validCheck: values => values.some(({ selected }) => selected === true),
+    enabled: (config, item) => (
+      typeof item.include === 'undefined' ||
+      config[item.include]
+    ),
   },
   {
     name: 'eventTitleAttributes',

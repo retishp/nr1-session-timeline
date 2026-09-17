@@ -9,6 +9,8 @@ const FormBlock = ({
   values,
   type,
   path,
+  entity,
+  config,
   addConfigItem,
   deleteConfigItem,
 }) => {
@@ -21,7 +23,7 @@ const FormBlock = ({
       <div className={`config-form__${type}`}>
         {Object.entries(value).map(([key, value]) => {
           return schema.children.map(child =>
-            createComponent(child, key, value, path + '/' + idx + '/' + key)
+            createComponent(child, entity, config, key, value, path + '/' + idx + '/' + key)
           )
         })}
         <Tooltip placementType={Tooltip.PLACEMENT_TYPE.BOTTOM} text="Remove">

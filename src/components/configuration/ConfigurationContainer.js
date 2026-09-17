@@ -23,11 +23,12 @@ class ConfigurationContainer extends React.PureComponent {
       firstTime,
       errorMsg,
       cancelEditConfig,
+      entity,
     } = this.props
     const { modalHidden } = this.state
 
     const formContents = Object.entries(config).map(([key, value]) => {
-      return createComponent(schema, key, value)
+      return createComponent(schema, entity, config, key, value)
     })
 
     return (

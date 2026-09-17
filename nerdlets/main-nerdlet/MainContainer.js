@@ -36,7 +36,7 @@ class MainContainer extends React.PureComponent {
   onChooseGrouping = (groupingDate, groupingValue) => {
     const {
       timeRange,
-      entity: { accountId },
+      entity: { accountId, domain },
       config,
     } = this.props
     const { filter } = this.state
@@ -50,6 +50,7 @@ class MainContainer extends React.PureComponent {
         groupingDate,
         accountId,
         config,
+        entityDomain: domain,
       },
     })
     this.setState({ groupingDate, groupingValue })
