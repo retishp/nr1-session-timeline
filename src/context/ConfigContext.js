@@ -55,7 +55,7 @@ export class ConfigProvider extends React.Component {
 
       // display the top-level attributes in their order of entry in the schema
       config = schema.reduce((acc, s) => {
-        acc[s.name] = config[s.name]
+        acc[s.name] = config[s.name] || s.defaultValue
         return acc
       }, {})
 

@@ -73,6 +73,10 @@
   background-color: #d0f0ff;
 }
 
+.timeline-item-type-log .timeline-item-symbol:after {
+  background-color: #d0d0d0;
+}
+
 .timeline-item-type-routechange .timeline-item-symbol:after {
   background-color: #fff4d1;
 }
@@ -86,6 +90,10 @@
 }
 
 .timeline-item-type-download .timeline-item-symbol:after {
+  background-color: #add7f7;
+}
+
+.timeline-item-type-timing .timeline-item-symbol:after {
   background-color: #add7f7;
 }
 

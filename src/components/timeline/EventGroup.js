@@ -58,6 +58,34 @@ const groups = [
     actionNames: ['DOWNLOAD'],
   },
   {
+    name: 'LOG',
+    eventDisplay: {
+      class: 'timeline-item-type-log',
+      icon: Icon.TYPE.HARDWARE_AND_SOFTWARE__SOFTWARE__LOGS,
+      label: 'Log',
+      color: '#404040',
+    },
+    timelineDisplay: {
+      color: '#404040',
+      label: 'Log',
+    },
+    actionNames: ['Log'],
+  },
+  {
+    name: 'TIMING',
+    eventDisplay: {
+      class: 'timeline-item-type-timing',
+      icon: Icon.TYPE.DATE_AND_TIME__DATE_AND_TIME__TIME,
+      label: 'Timing Event',
+      color: '#01355c',
+    },
+    timelineDisplay: {
+      color: '#add7f7',
+      label: 'Timing Event',
+    },
+    actionNames: ['PageViewTiming'],
+  },
+  {
     name: 'ROUTE_CHANGE',
     eventDisplay: {
       class: 'timeline-item-type-routechange',
@@ -139,7 +167,7 @@ const groups = [
       color: '#bf0015',
       label: 'Crash',
     },
-    actionNames: ['MobileCrash'],
+    actionNames: ['MobileCrash', 'MobileApplicationExit'],
   },
   {
     name: 'CUSTOM',

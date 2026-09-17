@@ -14,6 +14,7 @@ import {
 import startCase from 'lodash.startcase'
 import { withConfigContext } from '../../context/ConfigContext'
 import SectionHeader from '../section-header/SectionHeader'
+import { getEntityCondition } from '../../utils/queries'
 const dayjs = require('dayjs')
 const customParseFormat = require('dayjs/plugin/customParseFormat')
 
@@ -120,12 +121,15 @@ class SearchResults extends React.Component {
 
   render() {
     const {
-      entity: { accountId },
+      entity,
       selected,
       duration,
-      config: { groupingAttribute, searchAttribute, rootEvent: event },
+      config,
     } = this.props
-    const query = `FROM ${event} SELECT uniques(${groupingAttribute}) WHERE ${searchAttribute}='${selected}' ${duration.since} FACET dateOf(timestamp) LIMIT MAX `
+    const { groupingAttribute, searchAttribute, rootEvent: event } = config
+    const { accountId } = entity
+    const entityCondition = getEntityCondition(entity.guid, entity.domain, config)
+    const query = `FROM ${event} SELECT uniques(${groupingAttribute}) WHERE ${entityCondition} ${searchAttribute}='${selected}' ${duration.since} FACET dateOf(timestamp) LIMIT MAX `
 
     return (
       <React.Fragment>

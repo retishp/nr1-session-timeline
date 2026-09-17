@@ -143,9 +143,11 @@ Each event is grouped into a category based on the underlying data, and the time
 - [Configuration scope](#scope)
 - [Reset to defaults](#defaults)
 - [Attributes](#attributes)
-  - [identifier](#identifier)
-  - [root event](#root-event)
+  - [search attribute](#search-attribute)
+  - [search event](#search-event)
   - [grouping attribute](#grouping)
+  - [include browser events](#include-browser-events)
+  - [include log events](#include-log-events)
   - [timeline event types](#timeline-event-types)
   - [timeline event titles](#timeline-event-titles)
   - [event thresholds](#event-thresholds)
@@ -166,21 +168,37 @@ Click on the "Reset to Defaults" button in the configuration form to revert to t
 
 ##### Attributes <a id="attributes"></a>
 
-- `identifier` <a id="identifier"></a>
+- `search attribute` <a id="search-attribute"></a>
 
-  The `identifier` attribute is used to search the [`root event`](#root-event) for the unique set of [`grouping attributes`](#grouping) from which we can build the timeline views. It is recommended that the `identifier` is set to something that uniquely represents a user in your application, such as email or user id.
+  The `search attribute` attribute is used to search the [`search event`](#search-event) for the unique set of [`grouping attributes`](#grouping) from which we can build the timeline views. It is recommended that the `search attribute` is set to something that uniquely represents a user in your application, such as email or user id.
 
-- `root event` <a id="root-event"></a>
+- `search event` <a id="search-event"></a>
 
-  The `root event` is the event type used to located the target set of [`grouping attributes`](#grouping). We will search the `root event` for all unique `grouping attributes`, which are used to build the [timeline views](#timeline).
+  The `search event` is the event type used to located the target set of [`grouping attributes`](#grouping). We will search the `search event` for all unique `grouping attributes`, which are used to build the [timeline views](#timeline).
 
-  In a typical browser configuration, the `BrowserInteraction` acts as the `root event`. Every browser transaction creates a `BrowserInteraction` event, meaning that it has the broadest scope of data and makes the most sense for us to use to find the sessions we need. For Mobile apps, we use the `Mobile` event type, as it provides the broadest scope of data.
+  In a typical browser configuration, the `BrowserInteraction` acts as the `search event`. Every browser transaction creates a `BrowserInteraction` event, meaning that it has the broadest scope of data and makes the most sense for us to use to find the sessions we need. For Mobile apps, we use the `Mobile` event type, as it provides the broadest scope of data.
 
-  It is not recommended to change this value, unless this is a Browser app and you are not using the Browser SPA agent. In this case, set the `root event` to `PageView`.
+  It is not recommended to change this value, unless this is a Browser app and you are not using the Browser SPA agent. In this case, set the `search event` to `PageView`.
 
 - `grouping attribute` <a id="grouping-attribute"></a>
 
   The `grouping attribute` is used to locate the full set of events shown in the [timeline view](#timeline). For Browser, the default `grouping attribute` is `session`. For Mobile, the default `grouping attribute` is `sessionId`.
+
+  When the `include browser events` or `include log events` options are selected, the `grouping attribute` must carry the same name and the same value in all events in order for the additional events to appear on the timeline.
+
+- `include browser events` <a id="include-browser-events"></a>
+
+  Use this option to enable the inclusion of Browser events for mobile applications. This allows Browser events to be shown on the timeline when using mobile applications with WebViews instrumented with the Browser agent.
+
+  This option is not available for Browser entities.
+
+  **NOTE:** When this option is selected, the queries used to search for values of the search attribute and to search for events on the timeline are _not_ scoped to the current mobile entity. This means that values for the `search attribute` and `grouping attribute` from other mobile applications will be used and matching events from all mobile and browser applications in the account will be shown on the timeline.
+
+- `include log events` <a id="include-log-events"></a>
+
+  Use this option to enable the inclusion of log events for both browser and mobile applications. This allows `Log` events to be shown on the timeline.
+
+  **NOTE:** When this option is selected for mobile entities, the queries used to search for values of the search attribute and to search for events on the timeline are _not_ scoped to the current mobile entity. This means that all matching `Log` events in the account will be shown on the timeline.
 
 - `timeline event types` <a id="timeline-event-types"></a>
 

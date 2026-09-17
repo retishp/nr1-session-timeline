@@ -3,10 +3,12 @@ import PropTypes from 'prop-types'
 import { NrqlQuery, HeadingText, Stack, StackItem, Spinner, Button } from 'nr1'
 import sortBy from 'lodash.sortby'
 import cloneDeep from 'lodash.clonedeep'
+import { schema } from '../../data/packSchema'
 import EventStream from './EventStream'
 import Timeline from './Timeline'
 import eventGroup from './EventGroup'
 import startCase from 'lodash.startcase'
+import { getEntityCondition } from '../../utils/queries'
 import { withConfigContext } from '../../context/ConfigContext'
 
 export default class TimelineContainer extends React.Component {
@@ -26,8 +28,12 @@ export default class TimelineContainer extends React.Component {
         config: { timelineEventTypes },
       } = this.props
 
+      const timelineEventTypesSchema = schema.find(item => item.name === 'timelineEventTypes')
       const selectedEventTypes = timelineEventTypes.filter(
-        event => event.selected
+        event => event.selected && (
+          typeof timelineEventTypesSchema === 'undefined' ||
+          timelineEventTypesSchema.enabled(this.props.config, event)
+        )
       )
       if (selectedEventTypes) {
         const linkingAttributeClause = await this.getLinkingClause()
@@ -63,9 +69,10 @@ export default class TimelineContainer extends React.Component {
   }
 
   getData = async (eventType, linkingAttributeClause) => {
-    const { entityGuid: guid, accountId, groupingDate, duration } = this.props
+    const { entityGuid: guid, entityDomain, accountId, groupingDate, duration } = this.props
 
-    const query = `SELECT * from ${eventType} WHERE entityGuid = '${guid}' and dateOf(timestamp) = '${groupingDate}' and ${linkingAttributeClause} ORDER BY timestamp ASC LIMIT MAX ${duration.since}`
+    const entityCondition = getEntityCondition(guid, entityDomain, this.props.config)
+    const query = `SELECT * from ${eventType} WHERE ${entityCondition} dateOf(timestamp) = '${groupingDate}' and ${linkingAttributeClause} ORDER BY timestamp ASC LIMIT MAX ${duration.since}`
     const { data } = await NrqlQuery.query({ accountIds: [accountId], query })
 
     let totalWarnings = 0
@@ -90,6 +97,7 @@ export default class TimelineContainer extends React.Component {
   getLinkingClause = async () => {
     const {
       entityGuid: guid,
+      entityDomain,
       accountId,
       filter,
       groupingValue,
@@ -103,9 +111,10 @@ export default class TimelineContainer extends React.Component {
       },
     } = this.props
 
+    const entityCondition = getEntityCondition(guid, entityDomain, this.props.config)
     let attributeClause = `${groupingAttribute} = '${groupingValue}' and ${searchAttribute} = '${filter}'`
     if (linkingAttribute) {
-      const query = `SELECT uniques(${linkingAttribute}) from ${event} WHERE entityGuid = '${guid}' and dateOf(timestamp) = '${groupingDate}' and ${groupingAttribute} = '${groupingValue}' AND ${searchAttribute} = '${filter}' LIMIT MAX ${duration.since}`
+      const query = `SELECT uniques(${linkingAttribute}) from ${event} WHERE ${entityCondition} dateOf(timestamp) = '${groupingDate}' and ${groupingAttribute} = '${groupingValue}' AND ${searchAttribute} = '${filter}' LIMIT MAX ${duration.since}`
 
       const { data } = await NrqlQuery.query({ accountIds: [accountId], query })
 

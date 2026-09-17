@@ -8,6 +8,7 @@ const FormList = ({
   path,
   schemaItem,
   value,
+  config,
   lookupValue,
   changeConfigItem,
 }) => {
@@ -36,9 +37,10 @@ const FormList = ({
             <Checkbox
               value={item}
               label={item.name}
+              disabled={typeof schemaItem.enabled !== 'undefined' && !schemaItem.enabled(config, item)}
               onChange={event =>
                 changeConfigItem(path + '/' + idx, {
-                  name: item.name,
+                  ...item,
                   selected: event.target.checked,
                 })
               }
@@ -46,7 +48,7 @@ const FormList = ({
           ))}
         </CheckboxGroup>
       ) : (
-        <FormInput path={path} schemaItem={schemaItem} value={value} />
+        <FormInput path={path} schemaItem={schemaItem} value={value} config={config} />
       )}
     </Tooltip>
   )
